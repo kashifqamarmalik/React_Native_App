@@ -1,27 +1,31 @@
+/* eslint-disable max-len */
 import React, {useContext} from 'react';
-import { View, FlatList } from 'react-native';
+import {
+  FlatList,
+} from 'react-native';
 import ListItem from './ListItem';
-import {MediaContext, MediaProvider} from '../contexts/MediaContext';
-import {getAllMedia} from "../hooks/APIHooks.js"
+import {MediaContext} from '../contexts/MediaContext';
+import {getAllMedia} from '../hooks/APIHooks';
+import PropTypes from 'prop-types';
 
-const List = () => {
+const List = (props) => {
   const [media, setMedia] = useContext(MediaContext);
-  const [ data, loading] = getAllMedia ('https://raw.githubusercontent.com/mattpe/wbma/master/docs/assets/test.json');
-  console.log('List', data, loading);
+  const [data] = getAllMedia();
   setMedia(data);
-    return (
-        <View style={{marginTop: 36}}>
-            <FlatList
-                data={media}
-                keyExtractor = {(item, index) => index.toString()}
-                renderItem= {({item}) => {
-                    return (
-                        <ListItem item={item} />
-                    );
-                }}
-            />
-        </View>
-    );
+  return (
+    <FlatList
+      data={media}
+      keyExtractor={(item, index) => index.toString()}
+      renderItem={({item}) => <ListItem
+        navigation={props.navigation}
+        singleMedia={item}
+      />}
+    />
+  );
+};
+
+List.propTypes = {
+  navigation: PropTypes.object,
 };
 
 export default List;
